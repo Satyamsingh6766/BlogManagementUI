@@ -1,0 +1,11 @@
+.custom-alert {
+    width: 500px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-width: 5px;
+    font-size: 1.25rem;
+  }
+  

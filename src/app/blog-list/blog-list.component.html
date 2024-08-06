@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0 mx-auto">Welcome to world of blogs</h2>
+</div>
+
+
+<div class="container mt-4" *ngIf="paginatedBlogs.length">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#newBlogModal">New</button>
+    <form [formGroup]="searchForm" class="d-flex">
+      <input type="text" formControlName="search" class="form-control me-2" placeholder="Search by blog text...">
+      <button (click)="onSearch()" class="btn btn-primary" [disabled]="searchForm.invalid">Search</button>
+    </form>
+  </div>
+  <div *ngFor="let blog of paginatedBlogs">
+    <app-blog [blogData]="blog" (refreshList)="onRefreshList()"></app-blog>
+  </div>
+  <div class="d-flex justify-content-end mt-3">
+    <div class="pagination-controls">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+      <span>Page {{currentPage}} of {{totalPages}}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="!paginatedBlogs.length" class="d-flex justify-content-center align-items-center vh-100">
+  <p class="text-center border border-dark border-5 p-3">Oops! No Blogs data found.</p>
+</div>
+
+
+
+<div class="modal fade" id="newBlogModal" tabindex="-1" aria-labelledby="newBlogModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newBlogModalLabel">Create New Blog Post</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="blogForm.reset()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="blogForm">
+          <div class="form-group mb-3">
+            <label for="userName">UserName</label>
+            <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter userName"
+              [formControlName]="'userName'" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="blogText">Blog Text</label>
+            <textarea class="form-control" id="blogText" rows="5" placeholder="Enter at least 50 characters"
+              name="blogText" [formControlName]="'text'" required></textarea>
+          </div>
+
+          <button (click)="onSubmit()" class="btn btn-primary" data-bs-dismiss="modal"
+            [disabled]="blogForm.invalid">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+
+<div class="d-flex justify-content-center align-items-center vh-100" *ngIf="blogService.errorMessage">
+    <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" (click)="blogService.errorMessage=''"></button>
+      {{blogService.errorMessage}}
+    </div>
+  </div>
+<div *ngIf="!blogService.errorMessage">
+    <app-blog-list></app-blog-list>
+</div>
+
+
