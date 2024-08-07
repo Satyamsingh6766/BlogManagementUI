@@ -2,6 +2,18 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.3.
 
+#Blog Management Application
+
+##Frontend setup
+
+Install NodeJS package manager (npm) http://nodejs.org/download/         Version-20.16.0
+Install Angular using command        npm install -g @angular/cli@18.1.3  Version-18.1.3
+npm 8.3.1 is required
+Install git for Windows https://msysgit.github.io 
+
+Steps to configure:
+Clone BlogManagementUI
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
