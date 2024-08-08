@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild, } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { BlogComponent } from "../blog/blog.component";
 import { BlogService } from "../blog.service";
 import { Blog } from "../types/blog";
@@ -10,10 +10,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angula
   standalone: true,
   imports: [BlogComponent, CommonModule, ReactiveFormsModule],
   templateUrl: "./blog-list.component.html",
-  styleUrl: "./blog-list.component.css",
+  styleUrls: ["./blog-list.component.css"],
 })
-export class BlogListComponent {
+export class BlogListComponent implements OnInit {
   blogList: Array<Blog> = [];
+  filteredBlogList: Array<Blog> = [];
   blogForm: FormGroup = new FormGroup({
     userName: new FormControl('', [Validators.required, Validators.minLength(3)]),
     text: new FormControl('', [Validators.required, Validators.minLength(50)]),
@@ -28,22 +29,30 @@ export class BlogListComponent {
     search: new FormControl(''),
   });
 
-  constructor(private blogService: BlogService) {
+  constructor(private blogService: BlogService) { }
+
+  ngOnInit(): void {
     this.loadAllBlogs();
+    this.searchForm.controls['search'].valueChanges.subscribe(() => {
+      this.onSearch();
+    });
   }
 
   loadAllBlogs() {
     this.blogService.getAllBlog().subscribe((response: any) => {
       this.blogList = response.data;
-      this.totalPages = Math.ceil(this.blogList.length / this.pageSize);
+      this.filteredBlogList = [...this.blogList];
+      this.totalPages = Math.ceil(this.filteredBlogList.length / this.pageSize);
       this.updatePaginatedBlogs();
     });
   }
+
   updatePaginatedBlogs() {
     const startIndex = (this.currentPage - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
-    this.paginatedBlogs = this.blogList.slice(startIndex, endIndex);
+    this.paginatedBlogs = this.filteredBlogList.slice(startIndex, endIndex);
   }
+
 
   onRefreshList() {
     this.blogService.getAllBlog().subscribe((response: any) => {
@@ -63,25 +72,27 @@ export class BlogListComponent {
       this.loadAllBlogs();
       this.blogForm.reset();
     }, (error) => {
-      this.blogService.errorMessage = error.error.message;
+      this.errorMessage = error.error.message;
     });
   }
 
   onSearch() {
-    {
-      const searchValue = this.searchForm.controls['search'].value.toLowerCase();
-      if(searchValue){
-      this.blogList = this.blogList.filter((blog) =>
-        blog.text?.toLowerCase().includes(searchValue)
+    const searchValue = this.searchForm.controls['search'].value.toLowerCase();
+    if (searchValue) {
+      this.filteredBlogList = this.blogList.filter((blog) =>
+        blog.text?.toLowerCase().includes(searchValue) ||
+        blog.userName?.toLowerCase().includes(searchValue)
       );
-      this.totalPages = Math.ceil(this.blogList.length / this.pageSize);
-      this.currentPage = 1;
-      this.updatePaginatedBlogs();}else{
-      this.onRefreshList();
-      }
     }
-
+    else {
+      this.filteredBlogList = [...this.blogList];
+      this.onRefreshList();
+    }
+    this.totalPages = Math.ceil(this.filteredBlogList.length / this.pageSize);
+    this.currentPage = 1;
+    this.updatePaginatedBlogs();
   }
+
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;

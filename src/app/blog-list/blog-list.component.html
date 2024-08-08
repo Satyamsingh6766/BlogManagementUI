@@ -1,16 +1,20 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="mb-0 mx-auto">Welcome to world of blogs</h2>
 </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <button class="btn btn-success me-2" style="margin-left: 115px;" data-bs-toggle="modal" data-bs-target="#newBlogModal">New</button>
+  </div>
+  <div class="ms-auto">
+    <form [formGroup]="searchForm" class="d-flex">
+      <input type="text" formControlName="search" class="form-control" style="margin-right: 112px;" placeholder="Search by text/UserName">
+    </form>
+  </div>
+</div>
+
 
 
 <div class="container mt-4" *ngIf="paginatedBlogs.length">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#newBlogModal">New</button>
-    <form [formGroup]="searchForm" class="d-flex">
-      <input type="text" formControlName="search" class="form-control me-2" placeholder="Search by blog text...">
-      <button (click)="onSearch()" class="btn btn-primary" [disabled]="searchForm.invalid">Search</button>
-    </form>
-  </div>
   <div *ngFor="let blog of paginatedBlogs">
     <app-blog [blogData]="blog" (refreshList)="onRefreshList()"></app-blog>
   </div>

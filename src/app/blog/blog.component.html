@@ -1,23 +1,23 @@
 <div class="card mb-3">
   <div class="card-body d-flex flex-column align-items-center border border-dark border-2 ">
-    <h5 *ngIf="!isUpdate" class="card-title text-center">{{blogData?.text}}</h5>
-    <textarea *ngIf="isUpdate" rows="5" class="form-control text-center" [value]="blogData?.text" (blur)="updateText($event)" name="text"></textarea>
+    <h5 class="card-title text-center">{{blogData?.text}}</h5>
     <div class="d-flex justify-content-between w-100 align-items-center mt-3">
       <div class="">
         <small class="">Created by: {{blogData?.userName}}</small>
         <small class="ms-3">Created date: {{ blogData?.dateCreated | date:'fullDate' }}</small>
       </div>
       <div>
-        <button *ngIf="!isUpdate" class="btn btn-warning me-2" (click)="openEditModal()">Edit</button>
-        <button *ngIf="isUpdate" class="btn btn-primary me-2" (click)="onUpdate()">Submit</button>
-        <!-- <button class="btn btn-danger" (click)="onDelete()">Delete</button> -->
+        <button class="btn btn-warning me-2" data-bs-toggle="modal" [attr.data-bs-target]="'#' + blogData.userName"
+          (click)="openEditForm(blogData.userName)">Edit</button>
         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">Delete</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -35,3 +35,31 @@
   </div>
 </div>
 
+
+<div class="modal fade" [id]="blogData.userName" tabindex="-1" aria-labelledby="editBlogModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editBlogModalLabel">Edit Blog</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="editForm.reset()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editForm">
+          <div class="mb-3">
+            <label for="blogUserName" class="form-label">User Name</label>
+            <textarea id="blogUserName" rows="5" class="form-control" formControlName="userName"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="blogText" class="form-label">Blog Text</label>
+            <textarea id="blogText" rows="5" class="form-control" formControlName="text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="onUpdate()" data-bs-dismiss="modal">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
